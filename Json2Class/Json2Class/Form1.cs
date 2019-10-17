@@ -53,17 +53,19 @@ namespace JsonFomatter
                 {
                     var key = item.Key;
                     var value = item.Value;
-                    if (value.HasValues)//为对象
+                    if (value.HasValues)//object
                     {
                         if (value.Type is JTokenType.Array)//数组
                         {
-                            if (value.LastOrDefault().Type is JTokenType.Integer)
+                            if (value.FirstOrDefault().Type is JTokenType.Integer)
                             {
+                                NewStr += GetExplanatoryStr();
                                 NewStr += GetJsonProperty(key);
                                 NewStr += "\tpublic List<int> " + GetProperName(key) + " {get;set;}\r\n";
                             }
-                            else if (value.LastOrDefault().Type is JTokenType.String)
+                            else if (value.FirstOrDefault().Type is JTokenType.String)
                             {
+                                NewStr += GetExplanatoryStr();
                                 NewStr += GetJsonProperty(key);
                                 NewStr += "\tpublic List<string> " + GetProperName(key) + " {get;set;}\r\n";
                             }
@@ -71,6 +73,7 @@ namespace JsonFomatter
                         else if (value.Type is JTokenType.Object)
                         {
                             //递归
+                            NewStr += GetExplanatoryStr();
                             NewStr += GetJsonProperty(key);
                             NewStr += "\tpublic " + GetProperName(key) + " " + key.ToLower() + " {get;set;}\r\n";//类的属性名采用小写
                             var ret = GetClassLevel("public class " + GetProperName(key) + " \n{\r\n", JsonConvert.SerializeObject(value), ++count, false);
@@ -81,30 +84,35 @@ namespace JsonFomatter
                             // count = 0;
                         }
                     }
-                    else//为值
+                    else//value
                     {
                         if (value.Type is JTokenType.String)
                         {
+                            NewStr += GetExplanatoryStr();
                             NewStr += GetJsonProperty(key);
                             NewStr += "\tpublic string " + GetProperName(key) + " {get;set;}\r\n";
                         }
                         else if (value.Type is JTokenType.Integer)
                         {
+                            NewStr += GetExplanatoryStr();
                             NewStr += GetJsonProperty(key);
                             NewStr += "\tpublic int " + GetProperName(key) + " {get;set;}\r\n";
                         }
                         else if (value.Type is JTokenType.Date)
                         {
+                            NewStr += GetExplanatoryStr();
                             NewStr += GetJsonProperty(key);
                             NewStr += "\tpublic DateTime " + GetProperName(key) + " {get;set;}\r\n";
                         }
                         else if (value.Type is JTokenType.Guid)
                         {
+                            NewStr += GetExplanatoryStr();
                             NewStr += GetJsonProperty(key);
                             NewStr += "\tpublic Guid " + GetProperName(key) + " {get;set;}\r\n";
                         }
                         else if (value.Type is JTokenType.Boolean)
                         {
+                            NewStr += GetExplanatoryStr();
                             NewStr += GetJsonProperty(key);
                             NewStr += "\tpublic bool " + GetProperName(key) + " {get;set;}\r\n";
                         }
@@ -196,7 +204,19 @@ namespace JsonFomatter
             }
             return propertystr;
         }
-
+        /// <summary>
+        /// 获取注释
+        /// </summary>
+        /// <returns></returns>
+        private string GetExplanatoryStr()
+        {
+            string str = string.Empty;
+            if (checkBox5.Checked)
+            {
+                str = "\t/// <summary>\r\n\t///\r\n\t/// </summary>\r\n";
+            }
+            return str;
+        }
         private void checkBox4_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox4.Checked)
@@ -211,26 +231,6 @@ namespace JsonFomatter
             {
                 checkBox4.Checked = false;
             }
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }
